@@ -1,3 +1,34 @@
+
+
+Hey!
+I have a new project for you from the product team. Should be an interesting challenge. You can see the background and request in the email below.
+I would like you to perform the analysis and write a short report for me. I want to be able to review your code as well as read your thought process for each step. I also want you to prepare and deliver the presentation for the product team - you are ready for the challenge!
+They want us to predict which recipes will be popular 80% of the time and minimize the chance of showing unpopular recipes. I don’t think that is realistic in the time we have, but do your best and present whatever you find.
+You can find more details about what I expect you to do here. And information on the data here.
+I will be on vacation for the next couple of weeks, but I know you can do this without my support. If you need to make any decisions, include them in your work and I will review them when I am back.
+
+Good Luck!
+
+
+
+
+
+
+
+
+
+Hi,
+
+We haven’t met before but I am responsible for choosing which recipes to display on the homepage each day. I have heard about what the data science team is capable of and I was wondering if you can help me choose which recipes we should display on the home page?
+At the moment, I choose my favorite recipe from a selection and display that on the home page. We have noticed that traffic to the rest of the website goes up by as much as 40% if I pick a popular recipe. But I don’t know how to decide if a recipe will be popular. More traffic means more subscriptions so this is really important to the company.
+Can your team:
+- Predict which recipes will lead to high traffic?
+- Correctly predict high traffic recipes 80% of the time?
+We need to make a decision on this soon, so I need you to present your results to me by the end of the month. Whatever your results, what do you recommend we do next?
+Look forward to seeing your presentation.
+
+
+
 ## 📝 Task List
 
 Your written report should include both code, output and written text summaries of the following:
