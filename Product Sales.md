@@ -78,15 +78,20 @@ df = pd.read_csv('/Users/romualdchristialtcheutchoua/Downloads/product_sales.csv
 
 ## Data types, missing values, column data's consistency
 
-```df.info()```
+```
+df.info()
+```
 
 
 
-```for i in df.columns:
-    print(df[i].value_counts())
+```
+for i in df.columns:
+     print(df[i].value_counts())
 ```
     
- ``` df.nunique()```
+ ```
+ df.nunique()
+ ```
  
 
 - the column 'week' doesn’t have missing value. But it is more appropriate to be a categorical data type as the numbers present are just identifying week categories. So, this column is  changed to 'object' type
@@ -95,15 +100,22 @@ df = pd.read_csv('/Users/romualdchristialtcheutchoua/Downloads/product_sales.csv
 - the column revenue has more than 2 decimals. the decimals are reduced to 2
 
 
-``` df['week'] = df['week'].astype(object)```
+```
+df['week'] = df['week'].astype(object)
+```
 
-``` df['sales_method'] = df['sales_method'].replace('email', 'Email')
+```
+df['sales_method'] = df['sales_method'].replace('email', 'Email')
 df['sales_method'] = df['sales_method'].replace('em + call', 'Email + Call')
 ```
 
-``` df['revenue'] = df['revenue'].fillna(df['revenue'].mean())```
+```
+df['revenue'] = df['revenue'].fillna(df['revenue'].mean())
+```
 
-``` df['revenue'] = df['revenue'].round(2)```
+```
+df['revenue'] = df['revenue'].round(2)
+```
 
 
 ## outliers 
@@ -130,7 +142,8 @@ box(col_num, df, len(col_num), 2, 2, 12, save_path, plot_name)
 
 ``` for i in df.columns:
       if df[i].dtypes in ['float', 'int']:
-         print(df[i].value_counts())```
+         print(df[i].value_counts())
+```
 
 
 - the company was founded in 1984. So, it has 40 years of existence. any 'years_as_customer' value above 40 are removed.
@@ -140,13 +153,16 @@ box(col_num, df, len(col_num), 2, 2, 12, save_path, plot_name)
 
         
 
-``` df = df[df['years_as_customer'] <= 40]```
+```
+df = df[df['years_as_customer'] <= 40]
+```
 
 
 ## summary statistics of the cleaned data
 
 
-``` df.describe()```
+```df.describe()
+```
 
 
 -  rows values represent ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
@@ -235,7 +251,8 @@ plt.show()
 ``` 
 col_num = ['nb_sold', 'revenue', 'years_as_customer', 'nb_site_visits']
 
-box(col_num, df, len(col_num), 2, 2, 12)```
+box(col_num, df, len(col_num), 2, 2, 12)
+```
 
 
 
@@ -285,7 +302,8 @@ plt.show()
 approach_counts = df['sales_method'].value_counts()
 
 # Display the counts for each approach
-print(approach_counts)```
+print(approach_counts)
+```
 
 
 ``` 
@@ -293,7 +311,8 @@ print(approach_counts)```
 approach_counts = df['sales_method'].value_counts()
 
 # Display the counts for each approach
-print(approach_counts)```
+print(approach_counts)
+```
 
 
 ``` 
@@ -311,7 +330,8 @@ plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 
 # Show the plot
-plt.show()```
+plt.show()
+```
 
 
 
@@ -365,7 +385,8 @@ plt.title('Revenue Spread by Sales Method')
 plt.tight_layout()
 
 # Show the plot
-plt.show()```
+plt.show()
+```
 
 
 
