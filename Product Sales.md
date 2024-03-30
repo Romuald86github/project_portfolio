@@ -69,7 +69,8 @@ import pickle
 
 # loading the data
 
-```df = pd.read_csv('/Users/romualdchristialtcheutchoua/Downloads/product_sales.csv')
+```
+df = pd.read_csv('/Users/romualdchristialtcheutchoua/Downloads/product_sales.csv')
 ```
 
 
