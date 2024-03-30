@@ -63,12 +63,13 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings('ignore')
-import pickle ```
+import pickle 
+```
 
 
 # loading the data
 
-``` df = pd.read_csv('/Users/romualdchristialtcheutchoua/Downloads/product_sales.csv')
+```df = pd.read_csv('/Users/romualdchristialtcheutchoua/Downloads/product_sales.csv')
 ```
 
 
