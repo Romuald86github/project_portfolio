@@ -161,7 +161,8 @@ df = df[df['years_as_customer'] <= 40]
 ## summary statistics of the cleaned data
 
 
-```df.describe()
+```
+df.describe()
 ```
 
 
@@ -489,7 +490,7 @@ For the 'Call' sales method, there is a significant linear relationship between 
 
 Based on the above analysis, we recommend to used the mixed method ('Email + Call') but to reduce the amount of calls as optimally minimal as possible and maximize the amount of emails as optimally as possible. 
 
-* other exploratory graphs: state-wise analysis *
+## other exploratory graphs: state-wise analysis
 
 ``` 
 # Group by 'state' and 'sales_method', then count the number of occurrences
@@ -504,7 +505,8 @@ plt.ylabel('State')
 plt.legend(title='Sales Method')
 plt.tight_layout()
 plt.savefig('/Users/romualdchristialtcheutchoua/Desktop/Plots_saved_datacamp/Number_of_sales_methods_per_state.png', bbox_inches='tight')
-plt.show(```
+plt.show()
+```
 
 
 
@@ -537,7 +539,8 @@ plt.xlabel('Number of Site Visits')
 plt.ylabel('State')
 plt.tight_layout()
 plt.savefig('/Users/romualdchristialtcheutchoua/Desktop/Plots_saved_datacamp/Number_of_site_visits_per_state.png', bbox_inches='tight')
-plt.show()```
+plt.show()
+```
 
 
 
