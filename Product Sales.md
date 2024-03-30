@@ -54,27 +54,101 @@ Your written report should include written text summaries and graphics of the fo
 *Start writing report here..*
 
 
+# importing necessary libraries
+
+
+```import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('ignore')
+import pickle ```
+
+
+# loading the data
+
+``` df = pd.read_csv('/Users/romualdchristialtcheutchoua/Downloads/product_sales.csv')
+```
+
+
 # Data validation
 
 ## Data types, missing values, column data's consistency
+
+```df.info()```
+
+
+
+```for i in df.columns:
+    print(df[i].value_counts())
+```
+    
+ ``` df.nunique()```
+ 
+
 - the column 'week' doesn’t have missing value. But it is more appropriate to be a categorical data type as the numbers present are just identifying week categories. So, this column is  changed to 'object' type
 - Sales_method has 5 unique values while we should have only three; we should make sure all the values belong to ['Call', 'Email', 'Email + Call'].  'email' is converted to to 'Email' and 'em + call' to 'Email + Call'
 - the column 'revenue' contains 1074 missing data. removing these data points will cause data lost problem.  the missing data are replaced with the mean of overall revenue
 - the column revenue has more than 2 decimals. the decimals are reduced to 2
 
-## outliers (see figure: boxplot_outliers)
+
+``` df['week'] = df['week'].astype(object)```
+
+``` df['sales_method'] = df['sales_method'].replace('email', 'Email')
+df['sales_method'] = df['sales_method'].replace('em + call', 'Email + Call')
+```
+
+``` df['revenue'] = df['revenue'].fillna(df['revenue'].mean())```
+
+``` df['revenue'] = df['revenue'].round(2)```
+
+
+## outliers 
+
+```
+def box(columns, data, a, b, c, d, save_path, plot_name):
+    plt.figure(figsize=(15, 7), facecolor='purple')
+    j = 1
+    for i in columns:
+        if j <= a:
+            ax = plt.subplot(b, c, j)
+            sns.boxplot(data[i], palette='colorblind')
+            plt.xlabel(i, fontsize=d)
+        j += 1
+        
+    plt.suptitle('Boxplot to Check Outliers', fontsize=16)  # Set the title of the plot
+    plt.tight_layout()
+    plt.savefig(save_path + '/' + plot_name + '.png')
+    plt.show()
+    
+col_num = ['nb_sold', 'revenue', 'years_as_customer', 'nb_site_visits']
+box(col_num, df, len(col_num), 2, 2, 12, save_path, plot_name)
+```
+
+``` for i in df.columns:
+      if df[i].dtypes in ['float', 'int']:
+         print(df[i].value_counts())```
+
+
 - the company was founded in 1984. So, it has 40 years of existence. any 'years_as_customer' value above 40 are removed.
 - high values in 'revenue' are not outliers, as there is no limit to revenue
 - high values in 'nb_sold' are not outliers, as the is not a quota for each customer
 - high values in 'nb_site_visits' are not ouliers, as this is naturally feasible.
 
-![showing outliers](boxplot_outliers.png)
+        
+
+``` df = df[df['years_as_customer'] <= 40]```
 
 
 ## summary statistics of the cleaned data
+
+
+``` df.describe()```
+
+
 -  rows values represent ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
 
-![sum stat](summary_statistics_of_cleaned_data.png)
 
 ## comments:
 
@@ -92,13 +166,13 @@ Maximum: The maximum number of items sold in a transaction is 16.
 - revenue (Revenue from Sales):
 
 Count: There are 14,998 observations in the dataset.
-Mean: The average revenue generated per transaction is approximately $93.94.
-Standard Deviation: The revenue varies around the mean by approximately $45.71.
-Minimum: The minimum revenue from a transaction is $32.54.
-25th Percentile (Q1): 25% of transactions generate revenue of $53.04 or less.
-Median (50th Percentile, Q2): 50% of transactions generate revenue of $91.87 or less.
-75th Percentile (Q3): 75% of transactions generate revenue of $106.07 or less.
-Maximum: The maximum revenue from a transaction is $238.32.
+Mean: The average revenue generated per transaction is approximately USD 93.94.
+Standard Deviation: The revenue varies around the mean by approximately USD 45.71.
+Minimum: The minimum revenue from a transaction is USD32.54.
+25th Percentile (Q1): 25% of transactions generate revenue of USD53.04 or less.
+Median (50th Percentile, Q2): 50% of transactions generate revenue of USD91.87 or less.
+75th Percentile (Q3): 75% of transactions generate revenue of USD106.07 or less.
+Maximum: The maximum revenue from a transaction is USD238.32.
 
 - years_as_customer (Years as a Customer):
 
@@ -130,15 +204,66 @@ Maximum: The maximum number of site visits is 41.
 - Distribution of 'nb_sold', 'revenue', 'years_as_customer', 'nb_site_visits': histogram 
 - Distribution of 'nb_sold', 'revenue', 'years_as_customer', 'nb_site_visits': boxplot 
 
-![Dist](Distribution_of_nb_sold_revenue_years_as_customer_nb_site_visits.png)
+``` 
+# Columns for which histograms are to be plotted
+columns = ['nb_sold', 'revenue', 'years_as_customer', 'nb_site_visits']
 
-![Box](boxplot_outliers_removed.png)
+# Create a figure with subplots
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 8))
+
+# Flatten the axes array for easy iteration
+axes = axes.flatten()
+
+# Plot histograms for each column
+for i, column in enumerate(columns):
+    ax = axes[i]
+    ax.hist(df[column], bins=20, color='skyblue', edgecolor='black')
+    ax.set_title(f'Distribution of {column}')
+    ax.set_xlabel(column)
+    ax.set_ylabel('Frequency')
+
+# Adjust layout
+plt.tight_layout()
+
+# Show the plot
+plt.show()
+```
+
+
+``` 
+col_num = ['nb_sold', 'revenue', 'years_as_customer', 'nb_site_visits']
+
+box(col_num, df, len(col_num), 2, 2, 12)```
+
+
 
 - correlation vs revenue
 
-![Heat](Correlation_heatmap.png)
 
-![Corr](Correlation_vs_revenue.png)
+
+``` 
+# Plot heatmap for the entire DataFrame
+plt.figure(figsize=(12, 8))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Correlation Heatmap for DataFrame')
+
+
+
+# Plot correlations with revenue
+plt.figure(figsize=(8, 6))
+correlation_with_revenue = df.corr()['revenue'].sort_values(ascending=False)[1:]  # Exclude revenue itself
+correlation_with_revenue.plot(kind='bar', color='skyblue')
+plt.title('Correlation of Features with Revenue')
+plt.xlabel('Features')
+plt.ylabel('Correlation with Revenue')
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+# Show the plots
+plt.show()
+```
+
+
 
 ## comments
 - 'nb_sold' and 'nb_site_visits' looks normally distributed; their means are close to medians
@@ -151,30 +276,131 @@ Maximum: The maximum number of site visits is 41.
 
 
 ## how many customers were there for any approach?
+
+
+``` 
+# Count the number of customers for each approach
+approach_counts = df['sales_method'].value_counts()
+
+# Display the counts for each approach
+print(approach_counts)```
+
+
+``` 
+# Count the number of customers for each approach
+approach_counts = df['sales_method'].value_counts()
+
+# Display the counts for each approach
+print(approach_counts)```
+
+
+``` 
+# Count the number of customers for each approach
+approach_counts = df['sales_method'].value_counts()
+
+# Create a bar plot
+plt.figure(figsize=(10, 6))
+approach_counts.plot(kind='bar', color='skyblue')
+plt.title('Number of Customers for Each Sales Approach')
+plt.xlabel('Sales Approach')
+plt.ylabel('Number of Customers')
+plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+
+# Show the plot
+plt.show()```
+
+
+
+``` 
+import squarify
+
+# Calculate sales method counts
+sales_method_counts = df['sales_method'].value_counts()
+
+# Define colors (3 colors)
+colors = ['#ff9999', '#66b3ff', '#99ff99'] 
+
+# Plot treemap with custom colors
+plt.figure(figsize=(10, 6))
+squarify.plot(sizes=sales_method_counts.values, label=sales_method_counts.index, alpha=0.8, color=colors)
+plt.axis('off')
+plt.title('Treemap of Sales Method')
+plt.show()
+```
+
+
 - graph 
 - table
 |Email|Call|Email + Call|
 |---|---|---|
 |7465|4961|2572|
 
-![Ap](approach_counts.png)
 
-![Bar](Number_of_Customers_for_Each_Sales_Approach.png)
-
-
-![Tree](Sales_method_treemap.png)
 
 ## what does the spread of revenue look like overall? And for each method?
 
-Minimum: The minimum revenue from a transaction is $32.54.
-25th Percentile (Q1): 25% of transactions generate revenue of $53.04 or less.
-Median (50th Percentile, Q2): 50% of transactions generate revenue of $91.87 or less.
-75th Percentile (Q3): 75% of transactions generate revenue of $106.07 or less.
-Maximum: The maximum revenue from a transaction is $238.32.
 
-![Rev](Spread_of_revenue.png)
+``` 
+# Set the style of seaborn
+sns.set_style("whitegrid")
 
-![Vio](Revenue_distribution_violin_plots.png)
+# Create a figure and axis
+plt.figure(figsize=(10, 6))
+
+# Overall revenue spread
+plt.subplot(1, 2, 1)
+sns.boxplot(data=df, y='revenue', color='skyblue')
+plt.title('Overall Revenue Spread')
+
+# Revenue spread for each sales method
+plt.subplot(1, 2, 2)
+sns.boxplot(data=df, x='sales_method', y='revenue', palette='colorblind')
+plt.title('Revenue Spread by Sales Method')
+
+# Adjust layout
+plt.tight_layout()
+
+# Show the plot
+plt.show()```
+
+
+
+
+``` 
+# Set the style of seaborn
+sns.set_style("whitegrid")
+
+# Create a figure and axis
+plt.figure(figsize=(10, 6))
+
+# Overall revenue spread
+plt.subplot(1, 2, 1)
+sns.violinplot(data=df, y='revenue', color='skyblue')
+plt.title('Overall Revenue Spread')
+
+# Revenue spread for each sales method
+plt.subplot(1, 2, 2)
+sns.violinplot(data=df, x='sales_method', y='revenue', palette='colorblind')
+plt.title('Revenue Spread by Sales Method')
+
+# Adjust layout
+plt.tight_layout()
+
+# Show the plot
+plt.show()
+```
+
+
+
+
+Minimum: The minimum revenue from a transaction is USD32.54.
+25th Percentile (Q1): 25% of transactions generate revenue of USD53.04 or less.
+Median (50th Percentile, Q2): 50% of transactions generate revenue of USD91.87 or less.
+75th Percentile (Q3): 75% of transactions generate revenue of USD106.07 or less.
+Maximum: The maximum revenue from a transaction is USD238.32.
+
 
 
 The mixed method ('Email + Call') generates most revenue while 'Call' alone generates the least revenue. 
@@ -182,27 +408,130 @@ The mixed method ('Email + Call') generates most revenue while 'Call' alone gene
 
 ## Was there any difference in revenue over time for each of the methods?
 
+
+``` 
+import statsmodels.api as sm
+from scipy.stats import pearsonr
+
+# Filter the dataframe for each sales method and group revenue data by week
+sales_methods = df['sales_method'].unique()
+correlation_results = {}
+
+for method in sales_methods:
+    method_data = df[df['sales_method'] == method]
+    grouped_method_data = method_data.groupby('week')['revenue'].mean()
+    X = sm.add_constant(grouped_method_data.index)
+    model = sm.OLS(grouped_method_data, X)
+    results = model.fit()
+
+    # Plot scatterplot with regression line
+    plt.figure(figsize=(10, 6))
+    plt.scatter(grouped_method_data.index, grouped_method_data, label='Actual Revenue')
+    plt.plot(X[:, 1], results.predict(X), color='red', label='Regression Line')
+    plt.title(f'Revenue Trend Over Time for "{method}" Sales Method')
+    plt.xlabel('Week')
+    plt.ylabel('Revenue')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+
+    # Calculate correlation coefficient and p-value
+    correlation_coefficient, p_value = pearsonr(grouped_method_data.index, grouped_method_data)
+    correlation_results[method] = {'correlation_coefficient': correlation_coefficient, 'p_value': p_value}
+
+    # Print correlation coefficient and p-value
+    plt.text(0.5, 0.02, f'Correlation Coefficient: {correlation_coefficient:.2f}\nP-value: {p_value:.4f}', horizontalalignment='center', verticalalignment='bottom', transform=plt.gca().transAxes, fontsize=10)
+
+    # Save the plot as image
+    save_path = '/Users/romualdchristialtcheutchoua/Desktop/Plots_saved'
+    file_name = f'Revenue_trend_over_time_for_{method}_sales_method.png'
+    plt.savefig(f"{save_path}/{file_name}", bbox_inches='tight', pad_inches=0.5)
+
+    # Show the plot
+    plt.show()
+
+# Interpret p-values
+for method, values in correlation_results.items():
+    if values['p_value'] < 0.05:
+        print(f"For the '{method}' sales method, there is a significant linear relationship between revenue and time.")
+    else:
+        print(f"For the '{method}' sales method, there is no significant linear relationship between revenue and time.")
+```
+
+
 For the 'Email' sales method, there is a significant linear relationship between revenue and time.
 For the 'Email + Call' sales method, there is a significant linear relationship between revenue and time.
 For the 'Call' sales method, there is a significant linear relationship between revenue and time.
 
-![Em](Revenue_trend_over_time_for_Email_sales_method.png)
-
-![EmC](Revenue_trend_over_time_for_Email_Call_sales_method.png)
-
-![Call](Revenue_trend_over_time_for_call_sales_method.png)
 
 Based on the above analysis, we recommend to used the mixed method ('Email + Call') but to reduce the amount of calls as optimally minimal as possible and maximize the amount of emails as optimally as possible. 
 
 * other exploratory graphs: state-wise analysis *
 
-![RS](Revenue_per_state.png)
+``` 
+# Group by 'state' and 'sales_method', then count the number of occurrences
+sales_method_per_state = df.groupby(['state', 'sales_method']).size().unstack(fill_value=0)
 
-![NS](Number_of_site_visits_per_state.png)
+# Plot
+plt.figure(figsize=(12, 8))
+sales_method_per_state.plot(kind='barh', stacked=True, ax=plt.gca(), color=['#1f77b4', '#ff7f0e', '#2ca02c'])
+plt.title('Number of Sales Methods per State')
+plt.xlabel('Count')
+plt.ylabel('State')
+plt.legend(title='Sales Method')
+plt.tight_layout()
+plt.savefig('/Users/romualdchristialtcheutchoua/Desktop/Plots_saved_datacamp/Number_of_sales_methods_per_state.png', bbox_inches='tight')
+plt.show(```
 
-![PS](Number_of_sales_methods_per_state.png)
 
-![N](Number_of_new_products_sold_per_state.png)
+
+``` 
+# Group the DataFrame by 'state' and calculate the sum of 'nb_sold' for each state
+nb_sold_per_state = df.groupby('state')['nb_sold'].sum().sort_values(ascending=False)
+
+# Plot
+plt.figure(figsize=(12, 8))
+nb_sold_per_state.plot(kind='barh', color='skyblue')
+plt.title('Number of New Products Sold per State')
+plt.xlabel('Number of Items Sold')
+plt.ylabel('State')
+plt.tight_layout()
+plt.savefig('/Users/romualdchristialtcheutchoua/Desktop/Plots_saved_datacamp/Number_of_new_products_sold_per_state.png', bbox_inches='tight')
+plt.show()
+```
+
+
+
+``` 
+# Group the DataFrame by 'state' and calculate the sum of 'nb_site_visits' for each state
+site_visits_per_state = df.groupby('state')['nb_site_visits'].sum().sort_values(ascending=False)
+
+# Plot
+plt.figure(figsize=(12, 8))
+site_visits_per_state.plot(kind='barh', color='lightgreen')
+plt.title('Number of Site Visits per State')
+plt.xlabel('Number of Site Visits')
+plt.ylabel('State')
+plt.tight_layout()
+plt.savefig('/Users/romualdchristialtcheutchoua/Desktop/Plots_saved_datacamp/Number_of_site_visits_per_state.png', bbox_inches='tight')
+plt.show()```
+
+
+
+``` 
+# Group the DataFrame by 'state' and calculate the sum of 'revenue' for each state
+revenue_per_state = df.groupby('state')['revenue'].sum().sort_values(ascending=False)
+
+# Plot
+plt.figure(figsize=(12, 8))
+revenue_per_state.plot(kind='barh', color='orange')
+plt.title('Revenue per State')
+plt.xlabel('Revenue')
+plt.ylabel('State')
+plt.tight_layout()
+plt.savefig('/Users/romualdchristialtcheutchoua/Desktop/Plots_saved_datacamp/Revenue_per_state.png', bbox_inches='tight')
+plt.show()
+```
 
 
 
@@ -238,9 +567,27 @@ To effectively use the average revenue per customer visit metric to monitor the 
 
 ## Can you estimate initial value(s) for the metric based on the current data
 
+``` 
+# Calculate average revenue per customer visit
+total_revenue = df['revenue'].sum()
+total_visits = df['nb_site_visits'].sum()
+average_revenue_per_visit = total_revenue / total_visits
+
+# Display the initial metric value
+print(f"Initial average revenue per customer visit: ${average_revenue_per_visit:.2f}")
+
+# Create a plot to display the result
+plt.figure(figsize=(6, 4))
+plt.text(0.5, 0.5, f"Initial average revenue per customer visit: ${average_revenue_per_visit:.2f}",
+         ha='center', va='center', fontsize=14)
+plt.axis('off')
+plt.close()
+```
+
+
 Initial average revenue per customer visit: $3.76. 
 
-![IT](Initial_average_revenue_per_customer_visit.png)
+
 
 # Final summary including recommendations that the business should undertake
 
